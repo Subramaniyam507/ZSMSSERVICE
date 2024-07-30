@@ -1,0 +1,105 @@
+_schema-version: "3.1"
+ID: ZSMSSERVICE
+description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: ZSMSSERVICE-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: ZSMSSERVICE-connectivity
+  - name: ZSMSSERVICE-destination
+  - name: ZSMSSERVICE-db
+  - name: uaa_ZSMSSERVICE
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    readiness-health-check-http-endpoint: /health
+    readiness-health-check-type: http
+  build-parameters:
+    builder: npm
+- name: ZSMSSERVICE-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: ZSMSSERVICE-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: ZSMSSERVICE-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: ZSMSSERVICE-destination
+    parameters:
+      content-target: true
+  - name: ZSMSSERVICE_html_repo_host
+    parameters:
+      service-key:
+        name: ZSMSSERVICE_html_repo_host-key
+  - name: uaa_ZSMSSERVICE
+    parameters:
+      service-key:
+        name: uaa_ZSMSSERVICE-key
+  - name: srv-api
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: ZBSSMS_ZSMSSERVICE_html_repo_host
+          ServiceInstanceName: ZSMSSERVICE-html5-app-host-service
+          ServiceKeyName: ZSMSSERVICE_html_repo_host-key
+          sap.cloud.service: ZBSSMS
+        - Authentication: OAuth2UserTokenExchange
+          Name: ZBSSMS_uaa_ZSMSSERVICE
+          ServiceInstanceName: uaa_ZSMSSERVICE
+          ServiceKeyName: uaa_ZSMSSERVICE-key
+          sap.cloud.service: ZBSSMS
+        - Authentication: OAuth2UserTokenExchange
+          Name: ZBISMS
+          TokenServiceInstanceName: uaa_ZSMSSERVICE
+          TokenServiceKeyName: uaa_ZSMSSERVICE-key
+          URL: ~{srv-api/srv-url}
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+resources:
+- name: ZSMSSERVICE-connectivity
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: connectivity
+    service-plan: lite
+- name: ZSMSSERVICE-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-plan: lite
+- name: ZSMSSERVICE-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: ZSMSSERVICE_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: ZSMSSERVICE-html5-app-host-service
+    service-plan: app-host
+- name: uaa_ZSMSSERVICE
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: ZSMSZSAPP
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production

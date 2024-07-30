@@ -1,0 +1,5 @@
+
+service SmsService{
+
+    action sendAlertSms() ;
+}

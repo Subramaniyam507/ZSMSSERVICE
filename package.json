@@ -1,0 +1,32 @@
+{
+  "name": "ZSMSSERVICE",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^7",
+    "@sap/cds-hana": "^2",
+    "@sap/xssec": "^4.2.1",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^7",
+    "@sap/eslint-plugin-cds": "^3",
+    "eslint": "^9"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "db": "cds build && cds deploy --to hana:ZSMSSERVICE-db",
+    "bindings": "cds bind --to ZSMSSERVICE-connectivity:ckey && cds bind --to ZSMSSERVICE-destination:dkey && cds bind --to ZSMSSERVICE-db:dkey && cds bind --to uaa_ZSMSSERVICE:akey"
+  },
+  "cds": {
+    "requires": {
+      "connectivity": true,
+      "destinations": true,
+      "db": "hana"
+    }
+  }
+}

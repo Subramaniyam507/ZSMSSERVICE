@@ -14,12 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const twilio_1 = __importDefault(require("twilio"));
 module.exports = (srv) => {
     srv.on('sendAlertSms', (req) => __awaiter(void 0, void 0, void 0, function* () {
-        const twilioClient = (0, twilio_1.default)();
+        let sid = '';
+        let token = '';
+        if (process.env.CDS_ENV = 'production') {
+            if (process.env.TWILIO_SID && process.env.TWILIO_TOKEN) {
+                sid = process.env.TWILIO_SID;
+                token = process.env.TWILIO_TOKEN;
+            }
+            else {
+                req.reject(403, 'Could not parse the sms credentials');
+            }
+        }
+        else {
+            req.reject(403, 'Could not parse the sms credentials');
+        }
+        const twilioClient = (0, twilio_1.default)(sid, token);
         twilioClient.messages
             .create({
-            body: `test`,
-            from: '123',
-            to: '123',
-        }).then((message) => console.log(`Message ${message.sid} has been delivered.`)).catch((message) => console.error(message));
+            body: `SMS firm initiative test`,
+            from: '+919000319895',
+            to: '+919874139346',
+        }).then((message) => console.log(`Message ${message.sid} has been delivered.`)).catch((message) => req.reject(403, 'message not sent '));
     }));
 };

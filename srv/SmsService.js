@@ -29,11 +29,16 @@ module.exports = (srv) => {
             req.reject(403, 'Could not parse the sms credentials');
         }
         const twilioClient = (0, twilio_1.default)(sid, token);
-        twilioClient.messages
-            .create({
-            body: `SMS firm initiative test`,
-            from: '+919000319895',
-            to: '+919874139346',
-        }).then((message) => console.log(`Message ${message.sid} has been delivered.`)).catch((message) => req.reject(403, 'message not sent '));
+        let result;
+        try {
+            result = yield twilioClient.messages.create({
+                body: `SMS firm initiative test`,
+                from: '+919000319895',
+                to: '+919874139346',
+            });
+        }
+        catch (error) {
+            req.reject(403, 'Message not sent ');
+        }
     }));
 };

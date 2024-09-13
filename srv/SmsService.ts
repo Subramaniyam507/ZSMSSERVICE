@@ -24,15 +24,18 @@ export = (srv:ApplicationService)=>{
 
      
         const twilioClient = twilio(sid,token);
-        twilioClient.messages
-         .create({
-           body: `SMS firm initiative test`,
-           from: '+919000319895',
-           to: '+919874139346',
-         }).then((message) =>
-            console.log(`Message ${message.sid} has been delivered.`)
-          ).catch((message) => req.reject(403,'message not sent '));
-         
+        let result ;
+        try {
+          result = await twilioClient.messages.create({
+            body: `SMS firm initiative test`,
+            from: '+919000319895',
+            to: '+919874139346',
+          });
+          
+        } catch (error) {
+           req.reject(403,'Message not sent ')
+        }
+    
 
     })
 }

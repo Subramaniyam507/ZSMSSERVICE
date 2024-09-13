@@ -1,0 +1,18 @@
+#clientSecret=<< Existing password/certificate removed on export >>
+#
+#Fri Sep 13 02:12:15 UTC 2024
+Description=Destination for bpa
+Type=HTTP
+clientId=sb-cc1f6967-e80b-41d8-ad2c-0ad57b9b3485\!b311398|xsuaa\!b49390
+HTML5.DynamicDestination=true
+Authentication=OAuth2ClientCredentials
+Name=bpadest
+WebIDEEnabled=true
+sap.processautomation.enabled=true
+tokenServiceURL=https\://a85924e8trial.authentication.us10.hana.ondemand.com/oauth/token
+URL=https\://spa-api-gateway-bpi-us-prod.cfapps.us10.hana.ondemand.com
+ProxyType=Internet
+sap.build.usage=odata_gen
+tokenServiceURLType=Dedicated
+Appgyver.Enabled=true
+sap.applicationdevelopment.actions.enabled=true

@@ -1,0 +1,18 @@
+#clientSecret=<< Existing password/certificate removed on export >>
+#
+#Fri Sep 13 02:13:07 UTC 2024
+Description=destination to ZSMSSERVICE-srv
+Type=HTTP
+clientId=sb-ZSMSZSAPP\!t311398
+HTML5.DynamicDestination=true
+Authentication=OAuth2ClientCredentials
+WebIDEUsage=odata_abap,odata_gen,dev_abap
+Name=SMSSERVICE
+WebIDEEnabled=true
+sap.processautomation.enabled=true
+tokenServiceURL=https\://a85924e8trial.authentication.us10.hana.ondemand.com/oauth/token
+URL=https\://a85924e8trial-dev-zsmsservice-srv.cfapps.us10-001.hana.ondemand.com/odata/v4/sms
+ProxyType=Internet
+sap.build.usage=CAP
+tokenServiceURLType=Dedicated
+sap.applicationdevelopment.actions.enabled=true
